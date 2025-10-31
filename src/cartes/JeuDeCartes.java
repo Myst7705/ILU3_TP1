@@ -4,6 +4,8 @@ public class JeuDeCartes {
 	private Configuration[] configurations = new Configuration[19];
 	private int nbCarte = 19;
 	
+	private static int NB_CARTES_TOTAL = 106;
+	
 	public JeuDeCartes() {
 		configurations[0] = new Configuration(new Borne(25),10);
 		configurations[1] = new Configuration(new Borne(50),10);
@@ -59,6 +61,11 @@ public class JeuDeCartes {
 		}
 		configurations[nbCarte] = new Configuration(c, nb);
 		nbCarte++;
+	}
+	
+	public boolean checkCount() {
+		Carte[] tabCarte = donnerCartes();
+		return tabCarte.length == NB_CARTES_TOTAL;
 	}
 
 	private static class Configuration {

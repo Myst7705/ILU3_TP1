@@ -1,5 +1,6 @@
 package jeu;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -8,6 +9,7 @@ import cartes.Carte;
 public class Sabot implements Iterable<Carte> {
 	private int nbCartes;
 	private Carte[] cartes;
+	private int nombreOperations = 0;
 	
 	@Override
 	public Iterator<Carte> iterator(){
@@ -32,6 +34,7 @@ public class Sabot implements Iterable<Carte> {
 			throw new IllegalStateException();
 		}
 		cartes[nbCartes] = carte;
+		nombreOperations++;
 		nbCartes++;
 	}
 	
@@ -40,12 +43,14 @@ public class Sabot implements Iterable<Carte> {
 		Carte top;
 		top = it.next();
 		it.remove();
+		nombreOperations++;
 		return top;
 	}
 	
 	private class Iterateur implements Iterator<Carte>{
 		private int indiceIterateur = 0;
 		private boolean nextEffectue = false;
+		private int nombreOperationsReference = nombreOperations;
 		
 		@Override
 		public boolean hasNext() {
@@ -54,6 +59,7 @@ public class Sabot implements Iterable<Carte> {
 		
 		@Override
 		public Carte next() {
+			verificationConccurence();
 			if (hasNext()) {
 				nextEffectue = true;
 				indiceIterateur++;
@@ -64,6 +70,7 @@ public class Sabot implements Iterable<Carte> {
 		
 		@Override
 		public void remove() {
+			verificationConccurence();
 			if (!nextEffectue || nbCartes < 1) {
 				throw new IllegalStateException();
 			}
@@ -73,6 +80,14 @@ public class Sabot implements Iterable<Carte> {
 			nextEffectue = false;
 			indiceIterateur--;
 			nbCartes--;
+			nombreOperations++;
+			nombreOperationsReference++;
+		}
+		
+		private void verificationConccurence() {
+			if (nombreOperations != nombreOperationsReference) {
+				throw new ConcurrentModificationException();
+			}
 		}
 	}
 
