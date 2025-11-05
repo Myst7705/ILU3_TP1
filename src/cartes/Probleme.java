@@ -28,4 +28,9 @@ public abstract class Probleme extends Carte {
 		}
 		return false;
 	}
+	
+	@Override
+	public int hashCode() {
+		return 7 * (this.getClass().hashCode() + this.getType().hashCode());
+	}
 }
