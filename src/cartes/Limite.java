@@ -8,4 +8,12 @@ public abstract class Limite extends Carte {
 		}
 		return false;
 	}
+	
+	@Override
+	public int hashCode() {
+		if (this instanceof DebutLimite) {
+			return 7;
+		}
+		return 14;
+	}
 }

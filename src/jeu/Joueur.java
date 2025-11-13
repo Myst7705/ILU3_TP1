@@ -1,5 +1,10 @@
 package jeu;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+
 import cartes.Carte;
 
 public class Joueur {
@@ -19,6 +24,11 @@ public class Joueur {
 			return joueur.nom.equals(this.nom);
 		}
 		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return 7 * nom.hashCode();
 	}
 	
 	@Override
@@ -50,5 +60,50 @@ public class Joueur {
 	public boolean estDepotAutorise(Carte carte) {
 		return zoneDeJeu.estDepotAutorise(carte);
 	}
-
+	
+	public Set<Coup> coupsPossibles(Set<Joueur> participants){
+		Set<Coup> setCoupsPoss = new HashSet<>();
+		
+		for (Carte carteJouee : main.getListeCarte()) {
+			for (Joueur joueurCible : participants) {
+				Coup coupCourant = new Coup(this, carteJouee, joueurCible);
+				if (coupCourant.estValide()) {
+					setCoupsPoss.add(coupCourant);
+				}
+			}
+		}
+		return setCoupsPoss;
+	}
+	
+	public Set<Coup> coupsDefausse(){
+		Set<Coup> setCoupsDef = new HashSet<>();
+		
+		for (Carte carteJouee : main.getListeCarte()) {
+			Coup coupSabot = new Coup (this, carteJouee, null);
+			setCoupsDef.add(coupSabot);
+		}
+		return setCoupsDef;
+	}
+	
+	public void retirerDeLaMain(Carte carte) {
+		main.jouer(carte);
+	}
+	
+	public Coup choisirCoup(Set<Joueur> participants) {
+		Set<Coup> setCoupsPoss = coupsPossibles(participants);
+		
+		if (setCoupsPoss.isEmpty()) {
+			setCoupsPoss = coupsDefausse();
+		}
+		return choisirCoupAleatoire(setCoupsPoss);
+	}
+	
+	private Coup choisirCoupAleatoire(Set<Coup> coups) {
+		Random random = new Random();
+		int nbCoups = coups.size();
+		ArrayList<Coup> listCoups = new ArrayList<>(coups);
+		
+		int randInt = random.nextInt() % nbCoups;
+		return listCoups.get(randInt);
+	}
 }

@@ -23,4 +23,9 @@ public class Borne extends Carte {
 	public int getKm() {
 		return km;
 	}
+	
+	@Override
+	public int hashCode() {
+		return 7 * km;
+	}
 }

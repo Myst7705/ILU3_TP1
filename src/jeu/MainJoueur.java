@@ -15,6 +15,10 @@ public class MainJoueur implements Iterable<Carte> {
 		// TODO Auto-generated constructor stub
 	}
 	
+	public List<Carte> getListeCarte() {
+		return listeCarte;
+	}
+	
 	void prendre(Carte c) {
 		listeCarte.add(c);
 	}
